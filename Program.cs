@@ -1,4 +1,6 @@
-﻿ManagementObjectSearcher os = new ManagementObjectSearcher("select * from Win32_OperatingSystem");
+﻿if (!OperatingSystem.IsWindows()) return;
+
+ManagementObjectSearcher os = new ManagementObjectSearcher("select * from Win32_OperatingSystem");
 
 foreach (ManagementObject info in os.Get()) {
     PropertyData osName = info.Properties["Caption"];
