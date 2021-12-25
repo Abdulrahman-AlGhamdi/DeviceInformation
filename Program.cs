@@ -64,3 +64,25 @@ foreach (ManagementObject info in cpu.Get()) {
     PropertyData socketDesignation = info.Properties["SocketDesignation"];
     Console.WriteLine("Socket Designation      : {0}", socketDesignation.Value);
 }
+
+System.Console.WriteLine("\n------------------------------------------------------\n");
+
+ManagementObjectSearcher gpu = new ManagementObjectSearcher("select * from Win32_DiskDrive");
+
+System.Console.WriteLine("Hard Disk Information\n");
+
+foreach (ManagementObject info in gpu.Get()) {
+    PropertyData index = info.Properties["Index"];
+    int hardDiskNumber = Convert.ToInt32(index.Value) + 1;
+    if (hardDiskNumber > 1) System.Console.WriteLine("\n");
+    Console.WriteLine("Hard Disk Number : {0}", hardDiskNumber);
+
+    PropertyData caption = info.Properties["Caption"];
+    Console.WriteLine("Hard Disk Name   : {0}", caption.Value);
+    
+    PropertyData partitions = info.Properties["Partitions"];
+    Console.WriteLine("Partitions	 : {0}", partitions.Value);
+    
+    PropertyData size = info.Properties["Size"];
+    Console.WriteLine("Size		 : {0}", size.Value);
+}
