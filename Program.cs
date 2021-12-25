@@ -67,11 +67,11 @@ foreach (ManagementObject info in cpu.Get()) {
 
 System.Console.WriteLine("\n------------------------------------------------------\n");
 
-ManagementObjectSearcher gpu = new ManagementObjectSearcher("select * from Win32_DiskDrive");
+ManagementObjectSearcher hardDisk = new ManagementObjectSearcher("select * from Win32_DiskDrive");
 
 System.Console.WriteLine("Hard Disk Information\n");
 
-foreach (ManagementObject info in gpu.Get()) {
+foreach (ManagementObject info in hardDisk.Get()) {
     PropertyData index = info.Properties["Index"];
     int hardDiskNumber = Convert.ToInt32(index.Value) + 1;
     if (hardDiskNumber > 1) System.Console.WriteLine("\n");
@@ -85,4 +85,19 @@ foreach (ManagementObject info in gpu.Get()) {
     
     PropertyData size = info.Properties["Size"];
     Console.WriteLine("Size		 : {0}", size.Value);
+}
+
+System.Console.WriteLine("\n------------------------------------------------------\n");
+
+ManagementObjectSearcher gpu = new ManagementObjectSearcher("select * from Win32_IP4RouteTable");
+
+System.Console.WriteLine("IP Information\n");
+
+foreach (ManagementObject info in gpu.Get()) {
+    string mask = (string) info.Properties["Mask"].Value;
+    if (mask != "0.0.0.0") return;
+
+    PropertyData ip = info.Properties["NextHop"];
+    Console.WriteLine("IP Address : {0}", ip.Value);
+    Console.WriteLine("Mask	   : {0}", mask);
 }
