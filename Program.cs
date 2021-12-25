@@ -71,10 +71,12 @@ ManagementObjectSearcher hardDisk = new ManagementObjectSearcher("select * from 
 
 System.Console.WriteLine("Hard Disk Information\n");
 
+int hardDiskCount = 1;
+
 foreach (ManagementObject info in hardDisk.Get()) {
-    PropertyData index = info.Properties["Index"];
-    int hardDiskNumber = Convert.ToInt32(index.Value) + 1;
-    if (hardDiskNumber > 1) System.Console.WriteLine("\n");
+    if (hardDiskCount++ > 1) System.Console.Write("\n");
+
+    int hardDiskNumber = Convert.ToInt32(info.Properties["Index"].Value) + 1;
     Console.WriteLine("Hard Disk Number : {0}", hardDiskNumber);
 
     PropertyData caption = info.Properties["Caption"];
@@ -89,15 +91,43 @@ foreach (ManagementObject info in hardDisk.Get()) {
 
 System.Console.WriteLine("\n------------------------------------------------------\n");
 
-ManagementObjectSearcher gpu = new ManagementObjectSearcher("select * from Win32_IP4RouteTable");
+ManagementObjectSearcher ip4 = new ManagementObjectSearcher("select * from Win32_IP4RouteTable");
 
 System.Console.WriteLine("IP Information\n");
 
-foreach (ManagementObject info in gpu.Get()) {
+foreach (ManagementObject info in ip4.Get()) {
     string mask = (string) info.Properties["Mask"].Value;
-    if (mask != "0.0.0.0") return;
 
-    PropertyData ip = info.Properties["NextHop"];
-    Console.WriteLine("IP Address : {0}", ip.Value);
-    Console.WriteLine("Mask	   : {0}", mask);
+    if (mask == "0.0.0.0") {
+        PropertyData ip = info.Properties["NextHop"];
+        Console.WriteLine("IP Address : {0}", ip.Value);
+        Console.WriteLine("Mask	   : {0}", mask);
+    }
+}
+
+System.Console.WriteLine("\n------------------------------------------------------\n");
+
+ManagementObjectSearcher ram = new ManagementObjectSearcher("select * from Win32_PhysicalMemory");
+
+System.Console.WriteLine("RAM Information\n");
+
+int ramCount = 1;
+
+foreach (ManagementObject info in ram.Get()) {
+    if (ramCount++ > 1) System.Console.Write("\n");
+
+    PropertyData caption = info.Properties["Caption"];
+    Console.WriteLine("Caption      : {0}", caption.Value);
+    
+    PropertyData capacity = info.Properties["Capacity"];
+    Console.WriteLine("Capacity     : {0}", capacity.Value);
+    
+    PropertyData clockSpeed = info.Properties["ConfiguredClockSpeed"];
+    Console.WriteLine("Clock Speed  : {0}", clockSpeed.Value);
+    
+    PropertyData manufacturer = info.Properties["Manufacturer"];
+    Console.WriteLine("Manufacturer : {0}", manufacturer.Value);
+    
+    PropertyData partNumber = info.Properties["PartNumber"];
+    Console.WriteLine("Part Number  : {0}", partNumber.Value);
 }
